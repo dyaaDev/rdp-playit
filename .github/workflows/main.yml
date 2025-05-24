@@ -6,13 +6,20 @@ on:
 jobs:
   rdp:
     runs-on: windows-latest
+
     steps:
-    - name: Enable RDP and Install Playit
+    - name: Enable RDP & Set Password
       run: |
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-        Invoke-WebRequest -Uri "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-windows-x86_64-signed.exe" -OutFile "$env:USERPROFILE\playit.exe"
-        Start-Process -FilePath "$env:USERPROFILE\playit.exe" -ArgumentList "--secret $env:PLAYIT_AUTH_KEY" -NoNewWindow
-        Start-Sleep -Seconds 21600
+        Set-LocalUser -Name "ATENISperion" -Password (ConvertTo-SecureString -AsPlainText "}5*E99!v?cfb87:[Ou[v" -Force)
+
+    - name: Download and Run Playit Agent
       env:
-        PLAYIT_AUTH_KEY: ${{ secrets.PLAYIT_AUTH_KEY }}
+        PLAYIT_SECRET_KEY: ${{ secrets.PLAYIT_SECRET_KEY }}
+      run: |
+        Invoke-WebRequest -Uri "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-windows-x86_64-signed.exe" -OutFile "$env:USERPROFILE\playit.exe"
+        Start-Process -FilePath "$env:USERPROFILE\playit.exe" -ArgumentList "--secret $env:PLAYIT_SECRET_KEY" -NoNewWindow
+
+    - name: Keep Session Alive (6h)
+      run: Start-Sleep -Seconds 21600
