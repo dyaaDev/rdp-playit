@@ -12,7 +12,7 @@ jobs:
       run: |
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-        Set-LocalUser -Name "ATENISperion" -Password (ConvertTo-SecureString -AsPlainText "}5*E99!v?cfb87:[Ou[v" -Force)
+        Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "}5*E99!v?cfb87:[Ou[v" -Force)
 
     - name: Download and Run Playit Agent
       env:
