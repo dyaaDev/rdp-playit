@@ -8,11 +8,20 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Enable RDP & Set Password
+    - name: Enable RDP and Set Password
       run: |
+        # تفعيل RDP
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+
+        # فتح الجدار الناري لـ RDP
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+        # تعيين كلمة مرور
         Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "}5*E99!v?cfb87:[Ou[v" -Force)
+
+        # التأكد من تشغيل خدمة RDP
+        Set-Service -Name TermService -StartupType Automatic
+        Start-Service -Name TermService
 
     - name: Download and Run Playit Agent
       env:
